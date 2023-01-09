@@ -13,10 +13,12 @@ public class ObjectSpawner : MonoBehaviour
 
     // Private
     private SpawnerSpreader _spawnerSpreader;
+    private Environment _parentObject;
 
     private void Start()
     {
         _spawnerSpreader = FindObjectOfType<SpawnerSpreader>();
+        _parentObject = FindObjectOfType<Environment>();
 
         OverlappingCheck();
         StartCoroutine(DestroySelf());
@@ -44,7 +46,8 @@ public class ObjectSpawner : MonoBehaviour
 
     private void Spawn(Vector3 positionToSpawn, Quaternion rotationToSpawn)
     {
-        Instantiate(_objectToSpawn, positionToSpawn + new Vector3(0, _objectToSpawnYOffset, 0), rotationToSpawn);
+        GameObject obj = Instantiate(_objectToSpawn, positionToSpawn + new Vector3(0, _objectToSpawnYOffset, 0), rotationToSpawn);
+        obj.transform.SetParent(_parentObject.transform, true);
     }
 
     private IEnumerator DestroySelf()

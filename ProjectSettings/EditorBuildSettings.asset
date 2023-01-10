@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/spawner.unity
+    guid: 22e27e2ecc6434a45abaf2f087f60765
   m_configObjects: {}

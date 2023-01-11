@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -14,7 +12,7 @@ public class Mover : MonoBehaviour
     private void Awake()
     {
         Bullet.OnBulletImpact.AddListener(StoreCollisionInformatin);
-        Obstacle.OnObstacleDestruction.AddListener(Move);
+        Obstacle.OnObstacleDestroy.AddListener(Move);
     }
 
     public void StoreCollisionInformatin(Vector3 colliderPosition)

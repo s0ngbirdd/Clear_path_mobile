@@ -1,31 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DoorOpener : MonoBehaviour
 {
+    // Serialize
+    [SerializeField] private string _colliderTag = "Player";
+    [SerializeField] private float _doorOpenPosition = 90.0f;
+    [SerializeField] private float _doorClosePosition = 0.0f;
+
+    // Private
     private HingeJoint _hingeJoint;
-    private float _doorOpenDirection = 90f;
 
     private void Start()
     {
         _hingeJoint = GetComponent<HingeJoint>();
     }
 
-    /*private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            JointSpring jointSpring = _hingeJoint.spring;
-            jointSpring.targetPosition = _doorOpenDirection;
-            _doorOpenDirection = Mathf.Abs(_doorOpenDirection - 90);
-            _hingeJoint.spring = jointSpring;
-        }
-    }*/
-
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag.Equals("Player"))
+        if (other.gameObject.tag.Equals(_colliderTag))
         {
             OpenDoor();
         }
@@ -33,31 +25,23 @@ public class DoorOpener : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.tag.Equals("Player"))
+        if (other.gameObject.tag.Equals(_colliderTag))
         {
             CloseDoor();
         }
     }
 
-    public void ChangeDoorPosition()
+    private void OpenDoor()
     {
         JointSpring jointSpring = _hingeJoint.spring;
-        jointSpring.targetPosition = _doorOpenDirection;
-        _doorOpenDirection = Mathf.Abs(_doorOpenDirection - 90);
+        jointSpring.targetPosition = _doorOpenPosition;
         _hingeJoint.spring = jointSpring;
     }
 
-    public void OpenDoor()
+    private void CloseDoor()
     {
         JointSpring jointSpring = _hingeJoint.spring;
-        jointSpring.targetPosition = 90f;
-        _hingeJoint.spring = jointSpring;
-    }
-
-    public void CloseDoor()
-    {
-        JointSpring jointSpring = _hingeJoint.spring;
-        jointSpring.targetPosition = 0f;
+        jointSpring.targetPosition = _doorClosePosition;
         _hingeJoint.spring = jointSpring;
     }
 }

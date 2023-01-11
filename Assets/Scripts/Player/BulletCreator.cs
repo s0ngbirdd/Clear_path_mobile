@@ -38,11 +38,6 @@ public class BulletCreator : MonoBehaviour
         _canLaunchBullet = true;
     }
 
-    /*public void ChargeBullet()
-    {
-        _bulletPool.Get();
-    }*/
-
     private Bullet CreateBullet()
     {
         Bullet bullet = Instantiate(_bulletPrefab);

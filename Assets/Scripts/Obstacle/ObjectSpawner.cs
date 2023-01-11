@@ -6,10 +6,10 @@ public class ObjectSpawner : MonoBehaviour
     // Serialize
     [SerializeField] private GameObject _objectToSpawn;
     [SerializeField] private float _objectToSpawnYOffset = 0.5f;
-    [SerializeField] private float _raycastDistance = 100f;
+    [SerializeField] private float _raycastDistance = 100.0f;
     [SerializeField] private float _overlapBoxSize = 0.5f;
     [SerializeField] private LayerMask _spawnedObjectLayer;
-    [SerializeField] private float _timeForDestory = 0.01f;
+    [SerializeField] private float _timeBeforeDestory = 0.01f;
 
     // Private
     private SpawnerSpreader _spawnerSpreader;
@@ -20,11 +20,11 @@ public class ObjectSpawner : MonoBehaviour
         _spawnerSpreader = FindObjectOfType<SpawnerSpreader>();
         _parentObject = FindObjectOfType<ParentObstacles>();
 
-        OverlappingCheck();
+        ObjectOverlappingCheck();
         StartCoroutine(DestroySelf());
     }
 
-    private void OverlappingCheck()
+    private void ObjectOverlappingCheck()
     {
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, _raycastDistance))
         {
@@ -35,16 +35,16 @@ public class ObjectSpawner : MonoBehaviour
 
             if (numberOfCollidersFound == 0)
             {
-                Spawn(hit.point, spawnRotation);
+                SpawnObject(hit.point, spawnRotation);
             }
             else
             {
-                _spawnerSpreader.Spread();
+                _spawnerSpreader.SpreadObject();
             }
         }
     }
 
-    private void Spawn(Vector3 positionToSpawn, Quaternion rotationToSpawn)
+    private void SpawnObject(Vector3 positionToSpawn, Quaternion rotationToSpawn)
     {
         GameObject obj = Instantiate(_objectToSpawn, positionToSpawn + new Vector3(0, _objectToSpawnYOffset, 0), rotationToSpawn);
         obj.transform.SetParent(_parentObject.transform, true);
@@ -52,7 +52,7 @@ public class ObjectSpawner : MonoBehaviour
 
     private IEnumerator DestroySelf()
     {
-        yield return new WaitForSeconds(_timeForDestory);
+        yield return new WaitForSeconds(_timeBeforeDestory);
 
         Destroy(gameObject);
     }

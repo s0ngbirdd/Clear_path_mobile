@@ -11,16 +11,16 @@ public class ObjectStretcher : MonoBehaviour
 
     private void Awake()
     {
-        Bullet.OnBulletIncrease.AddListener(Stretch);
-        Obstacle.OnObstacleDestruction.AddListener(Move);
+        Bullet.OnBulletIncrease.AddListener(StretchObject);
+        Obstacle.OnObstacleDestroy.AddListener(MoveObject);
     }
 
     private void Start()
     {
-        Stretch();
+        StretchObject();
     }
 
-    private void Stretch()
+    private void StretchObject()
     {
         float scale = _objectWithScale.transform.localScale.x;
         transform.LookAt(_objectToStretch);
@@ -28,9 +28,9 @@ public class ObjectStretcher : MonoBehaviour
         transform.localScale = new Vector3(scale / 10, 1, _distanceBetweenObjects / 10);
     }
 
-    private void Move()
+    private void MoveObject()
     {
         transform.position = new Vector3(_objectWithScale.transform.position.x, transform.position.y, _objectWithScale.transform.position.z);
-        Stretch();
+        StretchObject();
     }
 }

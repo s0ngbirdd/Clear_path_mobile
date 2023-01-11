@@ -6,6 +6,7 @@ using UnityEngine.Events;
 public class Bullet : MonoBehaviour
 {
     public static UnityEvent OnBulletIncrease = new UnityEvent();
+    public static UnityEvent<Vector3> OnBulletImpact = new UnityEvent<Vector3>();
 
 
     // Serialize
@@ -14,6 +15,9 @@ public class Bullet : MonoBehaviour
     [SerializeField] private float _speed = 5.0f;
     [SerializeField] private float _baseSize = 1.0f;
     [SerializeField] private float _timeGap = 1.0f;
+
+    [SerializeField] private Color _infectionColor;
+    [SerializeField] private float _timeBeforeDestruction = 0.5f;
 
     //[SerializeField] private UnityEvent _onBulletIncrease = new UnityEvent();
 
@@ -72,20 +76,30 @@ public class Bullet : MonoBehaviour
             _bulletPool.Release(this);
         }*/
 
+        //OnBulletImpact?.Invoke(collision.gameObject.transform.position);
+        OnBulletImpact?.Invoke(transform.position);
+
         Collider[] hitColliders = Physics.OverlapSphere(collision.transform.position, _sphereCollider.radius * _baseSize, _layerMask);
 
-        foreach (Collider collider in hitColliders)
+        InfectColliders(hitColliders);
+
+        /*foreach (Collider collider in hitColliders)
         {
-            collider.gameObject.GetComponent<MeshRenderer>().material.color = Color.yellow;
+            collider.gameObject.GetComponent<MeshRenderer>().material.color = _infectionColor;
             Destroy(collider.gameObject, 1f);
-        }
+        }*/
 
 
 
         //DeleteColliders();
         //Destroy(collision.gameObject);
+
+
         ResetFields();
         _bulletPool.Release(this);
+
+
+        //OnBulletImpact?.Invoke();
         //hitColliders = null;
     }
 
@@ -107,16 +121,31 @@ public class Bullet : MonoBehaviour
         _isBulletLaunched = false;
         _isCoroutineEnd = true;
     }
-
-    /*private void DeleteColliders()
+    private void InfectColliders(Collider[] colliders)
     {
-        //_sphereCollider = GetComponent<SphereCollider>();
-        Debug.Log(_sphereCollider.radius * _baseSize);
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position + Vector3.forward.normalized * _sphereCollider.radius * _baseSize, _sphereCollider.radius * _baseSize, _layerMask);
+        foreach (Collider collider in colliders)
+        {
+            collider.gameObject.GetComponent<MeshRenderer>().material.color = _infectionColor;
+            //Destroy(collider.gameObject, _timeBeforeDestruction);
+        }
 
-        foreach (Collider collider in hitColliders)
+        //StartCoroutine(DestroyColliders(colliders));
+        //OnBulletImpact?.Invoke();
+
+    }
+
+    private IEnumerator DestroyColliders(Collider[] colliders)
+    {
+        yield return new WaitForSeconds(_timeBeforeDestruction);
+
+        foreach (Collider collider in colliders)
         {
             Destroy(collider.gameObject);
         }
-    }*/
+
+        ResetFields();
+        _bulletPool.Release(this);
+
+        //OnBulletImpact?.Invoke();
+    }
 }

@@ -13,12 +13,12 @@ public class ObjectSpawner : MonoBehaviour
 
     // Private
     private SpawnerSpreader _spawnerSpreader;
-    private Environment _parentObject;
+    private ParentObstacles _parentObject;
 
     private void Start()
     {
         _spawnerSpreader = FindObjectOfType<SpawnerSpreader>();
-        _parentObject = FindObjectOfType<Environment>();
+        _parentObject = FindObjectOfType<ParentObstacles>();
 
         OverlappingCheck();
         StartCoroutine(DestroySelf());

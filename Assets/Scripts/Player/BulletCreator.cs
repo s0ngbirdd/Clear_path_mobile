@@ -9,9 +9,12 @@ public class BulletCreator : MonoBehaviour
 
     // Private
     private IObjectPool<Bullet> _bulletPool;
+    private bool _canLaunchBullet = true;
 
     private void Awake()
     {
+        Mover.OnPlayerMove.AddListener(UnblockLaunchBullet);
+
         _bulletPool = new ObjectPool<Bullet>(
             CreateBullet,
             GetBullet,
@@ -23,11 +26,22 @@ public class BulletCreator : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && _canLaunchBullet)
         {
             _bulletPool.Get();
+            _canLaunchBullet = false;
         }
     }
+
+    public void UnblockLaunchBullet()
+    {
+        _canLaunchBullet = true;
+    }
+
+    /*public void ChargeBullet()
+    {
+        _bulletPool.Get();
+    }*/
 
     private Bullet CreateBullet()
     {

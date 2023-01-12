@@ -1,8 +1,12 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 
 public class StatsController : MonoBehaviour
 {
+    // Public
+    public static UnityEvent OnPlayerDeath = new UnityEvent();
+
     // Serialize
     [SerializeField] private GameObject _player;
     [SerializeField] private int _bulletDamage = 10;
@@ -22,7 +26,8 @@ public class StatsController : MonoBehaviour
     {
         if (_playerHealth <= 0)
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            OnPlayerDeath?.Invoke();
+            //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 

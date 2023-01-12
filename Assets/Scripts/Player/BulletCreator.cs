@@ -14,6 +14,9 @@ public class BulletCreator : MonoBehaviour
     private void Awake()
     {
         Mover.OnPlayerMove.AddListener(UnblockLaunchBullet);
+        Bullet.OnOtherImpact.AddListener(UnblockLaunchBullet);
+        FinishZone.OnFinishEnter.AddListener(LockLaunchBullet);
+        StatsController.OnPlayerDeath.AddListener(LockLaunchBullet);
 
         _bulletPool = new ObjectPool<Bullet>(
             CreateBullet,
@@ -31,6 +34,11 @@ public class BulletCreator : MonoBehaviour
             _bulletPool.Get();
             _canLaunchBullet = false;
         }
+    }
+
+    public void LockLaunchBullet()
+    {
+        _canLaunchBullet = false;
     }
 
     public void UnblockLaunchBullet()

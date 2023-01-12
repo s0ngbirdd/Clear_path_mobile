@@ -7,12 +7,14 @@ public class Bullet : MonoBehaviour
 {
     // Public
     public static UnityEvent OnBulletIncrease = new UnityEvent();
-    public static UnityEvent<Vector3> OnBulletImpact = new UnityEvent<Vector3>();
+    public static UnityEvent<Vector3> OnObstacleImpact = new UnityEvent<Vector3>();
+    public static UnityEvent OnOtherImpact = new UnityEvent();
 
     // Serialize
-    [SerializeField] private LayerMask _layerMask;
-    [SerializeField] private float _speed = 5.0f;
-    [SerializeField] private float _baseSize = 1.0f;
+    [SerializeField] private string _collisionLayerMask = "Obstacle";
+    [SerializeField] private LayerMask _overlapLayerMask;
+    [SerializeField] private float _speed = 10.0f;
+    [SerializeField] private float _baseSize = 5.0f;
     [SerializeField] private float _timeBeforeIncrease = 1.0f;
     [SerializeField] private Color _infectionColor;
     [SerializeField] private float _timeBeforeDestroy = 0.5f;
@@ -23,6 +25,12 @@ public class Bullet : MonoBehaviour
     private bool _isBulletLaunched;
     private Coroutine _coroutine;
     private SphereCollider _sphereCollider;
+
+    private void Awake()
+    {
+        StatsController.OnPlayerDeath.AddListener(DestoryBullet);
+        FinishZone.OnFinishEnter.AddListener(DestoryBullet);
+    }
 
     private void Start()
     {
@@ -40,7 +48,8 @@ public class Bullet : MonoBehaviour
         {
             if (_isCoroutineEnd)
             {
-                _coroutine = StartCoroutine(IncreaseSize());
+                //_coroutine = StartCoroutine(IncreaseSize());
+                IncreaseSize();
                 _isCoroutineEnd = false;
             }
         }
@@ -54,17 +63,46 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        OnBulletImpact?.Invoke(transform.position);
+        if (collision.gameObject.layer.Equals(LayerMask.NameToLayer(_collisionLayerMask)))
+        {
+            OnObstacleImpact?.Invoke(transform.position);
 
-        Collider[] hitColliders = Physics.OverlapSphere(collision.transform.position, _sphereCollider.radius * _baseSize, _layerMask);
+            Collider[] hitColliders = Physics.OverlapSphere(collision.transform.position, _sphereCollider.radius * _baseSize, _overlapLayerMask);
+            //Collider[] hitColliders = Physics.OverlapSphere(new Vector3(transform.position.x, transform.position.y, collision.transform.position.z), _sphereCollider.radius * _baseSize, _overlapLayerMask);
 
-        InfectColliders(hitColliders);
+            InfectColliders(hitColliders);
+
+            //ResetFields();
+
+            //_bulletPool.Release(this);
+            //ResetFields();
+        }
+        else
+        {
+            OnOtherImpact?.Invoke();
+            //ResetFields();
+        }
 
         ResetFields();
-        _bulletPool.Release(this);
     }
 
-    private IEnumerator IncreaseSize()
+    private void IncreaseSize()
+    {
+        _baseSize++;
+        transform.localScale = new Vector3(_baseSize, _baseSize, _baseSize);
+        //_isCoroutineEnd = true;
+
+        OnBulletIncrease?.Invoke();
+        _coroutine = StartCoroutine(WaitToIncreaseSize());
+    }
+
+    private IEnumerator WaitToIncreaseSize()
+    {
+        yield return new WaitForSeconds(_timeBeforeIncrease);
+        _isCoroutineEnd = true;
+    }
+
+    /*private IEnumerator IncreaseSize()
     {
         yield return new WaitForSeconds(_timeBeforeIncrease);
 
@@ -73,15 +111,23 @@ public class Bullet : MonoBehaviour
         _isCoroutineEnd = true;
 
         OnBulletIncrease?.Invoke();
-    }
+        Debug.Log("++");
+    }*/
 
     private void ResetFields()
     {
-        _baseSize = 1.0f;
+        _baseSize = 5.0f;
         transform.localScale = new Vector3(_baseSize, _baseSize, _baseSize);
         _isBulletLaunched = false;
         _isCoroutineEnd = true;
+        _bulletPool.Release(this);
     }
+
+    private void DestoryBullet()
+    {
+        Destroy(gameObject);
+    }
+
     private void InfectColliders(Collider[] colliders)
     {
         foreach (Collider collider in colliders)

@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 1970688140777798907}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -113,7 +113,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 116
   m_CollisionDetection: 1
 --- !u!114 &476562172249484308
 MonoBehaviour:
@@ -127,11 +127,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6d57e31115fdb743b1ff0ef37c2d08d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _layerMask:
+  _collisionLayerMask: Obstacle
+  _overlapLayerMask:
     serializedVersion: 2
     m_Bits: 64
-  _speed: 5
-  _baseSize: 1
-  _timeGap: 1
+  _speed: 10
+  _baseSize: 5
+  _timeBeforeIncrease: 0.5
   _infectionColor: {r: 1, g: 0.8873018, b: 0, a: 0}
-  _timeBeforeDestruction: 0.5
+  _timeBeforeDestroy: 0.5

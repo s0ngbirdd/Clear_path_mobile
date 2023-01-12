@@ -39,7 +39,7 @@ public class ObjectSpawner : MonoBehaviour
             }
             else
             {
-                _spawnerSpreader.SpreadObject();
+                //_spawnerSpreader.SpreadObject();
             }
         }
     }

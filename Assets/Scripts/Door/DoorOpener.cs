@@ -3,19 +3,25 @@ using UnityEngine;
 public class DoorOpener : MonoBehaviour
 {
     // Serialize
-    [SerializeField] private string _colliderTag = "Player";
+    //[SerializeField] private string _colliderTag = "Player";
     [SerializeField] private float _doorOpenPosition = 90.0f;
     [SerializeField] private float _doorClosePosition = 0.0f;
 
     // Private
     private HingeJoint _hingeJoint;
 
+    private void Awake()
+    {
+        FinishZone.OnFinishEnter.AddListener(OpenDoor);
+        FinishZone.OnFinishExit.AddListener(CloseDoor);
+    }
+
     private void Start()
     {
         _hingeJoint = GetComponent<HingeJoint>();
     }
 
-    private void OnTriggerEnter(Collider other)
+    /*private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag.Equals(_colliderTag))
         {
@@ -29,7 +35,7 @@ public class DoorOpener : MonoBehaviour
         {
             CloseDoor();
         }
-    }
+    }*/
 
     private void OpenDoor()
     {

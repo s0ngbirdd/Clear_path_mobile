@@ -45,11 +45,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _objectToSpawn: {fileID: 4133542606632879183, guid: e2307a8f6df1f1944b40aeb2bd375007, type: 3}
-  _parentObject: {fileID: 440133184814626384, guid: 7b89b06746771324abe6ff1eadaa1071, type: 3}
-  _objectToSpawnYOffset: 0.5
+  _objectToSpawnYOffset: 7
   _raycastDistance: 100
-  _overlapBoxSize: 0.5
+  _overlapBoxSize: 1.1
   _spawnedObjectLayer:
     serializedVersion: 2
-    m_Bits: 64
-  _timeForDestory: 0.01
+    m_Bits: 448
+  _timeBeforeDestory: 0.01

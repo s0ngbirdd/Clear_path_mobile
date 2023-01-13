@@ -10,11 +10,12 @@ public class BulletCreator : MonoBehaviour
     // Private
     private IObjectPool<Bullet> _bulletPool;
     private bool _canLaunchBullet = true;
+    private ParentBullet _parentObject;
 
     private void Awake()
     {
-        Mover.OnPlayerMove.AddListener(UnblockLaunchBullet);
-        Bullet.OnOtherImpact.AddListener(UnblockLaunchBullet);
+        Mover.OnPlayerMove.AddListener(UnlockLaunchBullet);
+        Bullet.OnOtherImpact.AddListener(UnlockLaunchBullet);
         FinishZone.OnFinishEnter.AddListener(LockLaunchBullet);
         StatsController.OnPlayerDeath.AddListener(LockLaunchBullet);
 
@@ -27,21 +28,26 @@ public class BulletCreator : MonoBehaviour
             );
     }
 
+    private void Start()
+    {
+        _parentObject = FindObjectOfType<ParentBullet>();
+    }
+
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && _canLaunchBullet)
+        if (Input.GetMouseButtonDown(0) && _canLaunchBullet)
         {
             _bulletPool.Get();
-            _canLaunchBullet = false;
+            LockLaunchBullet();
         }
     }
 
-    public void LockLaunchBullet()
+    private void LockLaunchBullet()
     {
         _canLaunchBullet = false;
     }
 
-    public void UnblockLaunchBullet()
+    private void UnlockLaunchBullet()
     {
         _canLaunchBullet = true;
     }
@@ -50,6 +56,7 @@ public class BulletCreator : MonoBehaviour
     {
         Bullet bullet = Instantiate(_bulletPrefab);
         bullet.SetPool(_bulletPool);
+        bullet.transform.SetParent(_parentObject.transform, true);
         return bullet;
     }
 

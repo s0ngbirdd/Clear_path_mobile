@@ -12,13 +12,11 @@ public class ObjectSpawner : MonoBehaviour
     [SerializeField] private float _timeBeforeDestory = 0.01f;
 
     // Private
-    private SpawnerSpreader _spawnerSpreader;
-    private ParentObstacles _parentObject;
+    private ParentObstacle _parentObject;
 
     private void Start()
     {
-        _spawnerSpreader = FindObjectOfType<SpawnerSpreader>();
-        _parentObject = FindObjectOfType<ParentObstacles>();
+        _parentObject = FindObjectOfType<ParentObstacle>();
 
         ObjectOverlappingCheck();
         StartCoroutine(DestroySelf());
@@ -36,10 +34,6 @@ public class ObjectSpawner : MonoBehaviour
             if (numberOfCollidersFound == 0)
             {
                 SpawnObject(hit.point, spawnRotation);
-            }
-            else
-            {
-                //_spawnerSpreader.SpreadObject();
             }
         }
     }

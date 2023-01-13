@@ -12,40 +12,40 @@ public class Mover : MonoBehaviour
     // Private
     private Vector3 _colliderPosition;
     private SphereCollider _sphereCollider;
+    private Rigidbody _rigidbody;
 
     private void Awake()
     {
+        _sphereCollider = GetComponent<SphereCollider>();
+        _rigidbody = GetComponent<Rigidbody>();
+
         Bullet.OnObstacleImpact.AddListener(StoreCollisionInformatin);
-        Obstacle.OnObstacleDestroy.AddListener(Move);
+        Obstacle.OnObstacleDestroy.AddListener(MoveObject);
+        FinishZone.OnFinishEnter.AddListener(FinishMoveObject);
     }
 
     private void Start()
     {
-        _sphereCollider = GetComponent<SphereCollider>();
-
         transform.LookAt(_objectToLookAt);
     }
 
-    public void StoreCollisionInformatin(Vector3 colliderPosition)
+    private void StoreCollisionInformatin(Vector3 colliderPosition)
     {
         _colliderPosition = colliderPosition;
     }
 
-    public void Move()
+    private void MoveObject()
     {
-        //Vector3 newPosition = _colliderPosition + (Vector3.back * _sphereCollider.radius * transform.localScale.x);
         Vector3 newPosition = _colliderPosition - (transform.forward * _sphereCollider.radius * transform.localScale.x);
-        //Vector3 newPosition = new Vector3(transform.position.x, transform.position.y, _colliderPosition.z) + Vector3.back * _sphereCollider.radius;
 
-
-        //transform.position = new Vector3(_colliderPosition.x, transform.position.y, _colliderPosition.z);
-
-        Vector3 startPosition = transform.position;
-        Vector3 endPosition = new Vector3(newPosition.x, transform.position.y, newPosition.z);
-        transform.position = Vector3.Slerp(startPosition, endPosition, 2);
-
-        //transform.position = new Vector3(newPosition.x, transform.position.y, newPosition.z);
+        transform.position = new Vector3(newPosition.x, transform.position.y, newPosition.z);
         transform.LookAt(_objectToLookAt);
         OnPlayerMove?.Invoke();
+    }
+
+    private void FinishMoveObject()
+    {
+        transform.position = new Vector3(_objectToLookAt.position.x, _objectToLookAt.position.y + _sphereCollider.radius * transform.localScale.x * 2, _objectToLookAt.position.z);
+        _rigidbody.useGravity = true;
     }
 }

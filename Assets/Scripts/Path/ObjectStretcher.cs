@@ -13,6 +13,7 @@ public class ObjectStretcher : MonoBehaviour
     {
         Bullet.OnBulletIncrease.AddListener(StretchObject);
         Obstacle.OnObstacleDestroy.AddListener(MoveObject);
+        FinishZone.OnFinishEnter.AddListener(DestroyPath);
     }
 
     private void Start()
@@ -32,5 +33,10 @@ public class ObjectStretcher : MonoBehaviour
     {
         transform.position = new Vector3(_objectWithScale.transform.position.x, transform.position.y, _objectWithScale.transform.position.z);
         StretchObject();
+    }
+
+    private void DestroyPath()
+    {
+        Destroy(gameObject);
     }
 }
